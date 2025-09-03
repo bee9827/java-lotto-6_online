@@ -1,6 +1,8 @@
 package lotto.service;
 
-import java.util.HashMap;
+import static java.util.stream.Collectors.counting;
+import static java.util.stream.Collectors.groupingBy;
+
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -28,18 +30,13 @@ public class LottoService {
                 .toList();
     }
 
-    public Map<LottoRank, Integer> getRankResults(
+    public Map<LottoRank, Long> getRankResults(
             WinningLotto winningLotto,
             List<Lotto> purchasedLotto
     ) {
-        Map<LottoRank, Integer> winningLottoStatusAndCounts = new HashMap<>();
-
-        purchasedLotto.stream()
-                .map(lotto -> rankOf(winningLotto, lotto))
-                .filter(rank -> rank != LottoRank.NONE)
-                .forEach(lottoRank -> winningLottoStatusAndCounts.merge(lottoRank, 1, Integer::sum));
-
-        return winningLottoStatusAndCounts;
+        return purchasedLotto.stream()
+                .collect(groupingBy(lotto ->
+                        rankOf(winningLotto, lotto), counting()));
     }
 
     private LottoRank rankOf(WinningLotto winningLotto, Lotto lotto) {
@@ -48,12 +45,12 @@ public class LottoService {
                 winningLotto.matchBonus(lotto));
     }
 
-    public Double getRevenueRate(Map<LottoRank, Integer> winningLottoStatusAndCounts, LottoMoney lottoMoney) {
+    public Double getRevenueRate(Map<LottoRank, Long> winningLottoStatusAndCounts, LottoMoney lottoMoney) {
         Long revenue = getRevenue(winningLottoStatusAndCounts);
         return lottoMoney.getRevenueRate(revenue);
     }
 
-    private Long getRevenue(Map<LottoRank, Integer> winningLottoStatusAndCounts) {
+    private Long getRevenue(Map<LottoRank, Long> winningLottoStatusAndCounts) {
         return winningLottoStatusAndCounts.entrySet()
                 .stream()
                 .map(this::toCost)
@@ -61,7 +58,7 @@ public class LottoService {
                 .orElse(0L);
     }
 
-    private Long toCost(Entry<LottoRank, Integer> rankResult) {
-        return (long) rankResult.getKey().getPrice() * rankResult.getValue();
+    private Long toCost(Entry<LottoRank, Long> rankResult) {
+        return rankResult.getKey().getPrice() * rankResult.getValue();
     }
 }

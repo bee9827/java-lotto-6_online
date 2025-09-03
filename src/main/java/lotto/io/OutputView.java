@@ -9,6 +9,6 @@ public interface OutputView {
     void println();
     void printInstruction(String instruction);
     void printLottoList(List<Lotto> lottoList);
-    void printWinningStatus(Map<LottoRank, Integer> winningLottoStatusAndCounts, Double revenueRate);
+    void printWinningStatus(Map<LottoRank, Long> winningLottoStatusAndCounts, Double revenueRate);
     void printError(String error);
 }

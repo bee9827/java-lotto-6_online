@@ -58,7 +58,7 @@ public class Controller {
     }
 
     private void statusControl(WinningLotto winningLotto, List<Lotto> lottoList, LottoMoney lottoMoney) {
-        Map<LottoRank, Integer> rankResults =
+        Map<LottoRank, Long> rankResults =
                 lottoService.getRankResults(winningLotto, lottoList);
         Double revenueRate = lottoService.getRevenueRate(rankResults, lottoMoney);
         outputView.printWinningStatus(rankResults, revenueRate);

@@ -58,10 +58,9 @@ public class Lotto {
     }
 
     public int matchCount(Lotto otherLotto) {
-        return numbers.stream()
+        return (int)numbers.stream()
                 .filter(otherLotto::contains)
-                .toList()
-                .size();
+                .count();
     }
 
     @Override

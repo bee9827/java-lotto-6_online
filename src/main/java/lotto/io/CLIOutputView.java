@@ -29,16 +29,16 @@ public class CLIOutputView implements OutputView {
     }
 
     @Override
-    public void printWinningStatus(Map<LottoRank, Integer> winningLottoStatusAndCounts, Double revenueRate) {
+    public void printWinningStatus(Map<LottoRank, Long> winningLottoStatusAndCounts, Double revenueRate) {
         System.out.println("당첨 통계");
         System.out.println("---");
         for (LottoRank status : LottoRank.values()) {
-            printStatus(status, winningLottoStatusAndCounts.getOrDefault(status, 0));
+            printStatus(status, winningLottoStatusAndCounts.getOrDefault(status, 0L));
         }
         System.out.printf("총 수익률은 %.1f%%입니다.", revenueRate);
     }
 
-    private void printStatus(LottoRank status, Integer count) {
+    private void printStatus(LottoRank status, Long count) {
         if (status == LottoRank.SECOND) {
             System.out.printf("%d개 일치, 보너스 볼 일치 (%,d원) - %d개%n",
                     status.getMatchCount(), status.getPrice(), count);
